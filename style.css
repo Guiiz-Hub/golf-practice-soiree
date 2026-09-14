@@ -65,3 +65,49 @@ select {
   background: white;
   color: var(--marine);
 }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--laiton);
+  margin: 24px 0;
+}
+
+.joueur-bloc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--laiton);
+}
+
+.joueur-titre {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  margin: 0;
+  color: var(--vert-fairway);
+}
+
+input, select {
+  padding: 10px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  border: 1px solid var(--marine);
+  border-radius: 2px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background: var(--vert-fairway);
+  color: var(--creme);
+  border: none;
+  border-radius: 2px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #999;
+  cursor: not-allowed;
+}

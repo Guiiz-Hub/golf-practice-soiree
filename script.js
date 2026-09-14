@@ -24,3 +24,45 @@ async function chargerBoxes() {
 }
 
 chargerBoxes();
+
+const SERVICES = ['MOS', 'EWIS', 'CE', 'ASV', 'Pyro', 'HAF', 'ELEC', 'VEF', 'GCONF', 'DIR'];
+let nombreJoueurs = 0;
+
+function creerBlocJoueur(numero) {
+  const bloc = document.createElement('div');
+  bloc.className = 'joueur-bloc';
+
+  const optionsServices = SERVICES
+    .map(s => `<option value="${s}">${s}</option>`)
+    .join('');
+
+  bloc.innerHTML = `
+    <p class="joueur-titre">Joueur ${numero}</p>
+    <input type="text" placeholder="Prénom" class="input-prenom">
+    <input type="text" placeholder="Nom" class="input-nom">
+    <input type="text" placeholder="Pseudo (optionnel)" class="input-pseudo">
+    <select class="input-service">
+      <option value="">-- Service --</option>
+      ${optionsServices}
+    </select>
+  `;
+
+  return bloc;
+}
+
+document.getElementById('btn-ajouter-joueur').addEventListener('click', () => {
+  if (nombreJoueurs >= 5) return;
+
+  nombreJoueurs++;
+  const container = document.getElementById('joueurs-container');
+  container.appendChild(creerBlocJoueur(nombreJoueurs));
+
+  if (nombreJoueurs === 5) {
+    document.getElementById('btn-ajouter-joueur').disabled = true;
+  }
+});
+
+document.getElementById('box-select').addEventListener('change', (event) => {
+  const section = document.getElementById('section-joueurs');
+  section.style.display = event.target.value ? 'block' : 'none';
+});
