@@ -66,3 +66,69 @@ document.getElementById('box-select').addEventListener('change', (event) => {
   const section = document.getElementById('section-joueurs');
   section.style.display = event.target.value ? 'block' : 'none';
 });
+
+document.getElementById('btn-ajouter-joueur').addEventListener('click', () => {
+  document.getElementById('btn-bonne-chance').disabled = false;
+});
+
+document.getElementById('btn-bonne-chance').addEventListener('click', async () => {
+  const confirmation = confirm('Êtes-vous sûrs d\'être au complet ? Une fois validé, plus aucune modification ne sera possible.');
+  if (!confirmation) return;
+
+  const boxId = parseInt(document.getElementById('box-select').value, 10);
+  const blocs = document.querySelectorAll('.joueur-bloc');
+
+  const joueursAEnregistrer = [];
+
+  for (const bloc of blocs) {
+    const prenom = bloc.querySelector('.input-prenom').value.trim();
+    const nom = bloc.querySelector('.input-nom').value.trim();
+    const pseudo = bloc.querySelector('.input-pseudo').value.trim();
+    const service = bloc.querySelector('.input-service').value;
+
+    if (!prenom || !nom || !service) {
+      alert('Merci de remplir prénom, nom et service pour chaque joueur avant de lancer le jeu.');
+      return;
+    }
+
+    joueursAEnregistrer.push({
+      box_id: boxId,
+      prenom,
+      nom,
+      pseudo: pseudo || null,
+      service,
+    });
+  }
+
+  const { error: erreurInsertion } = await supabaseClient
+    .from('joueur')
+    .insert(joueursAEnregistrer);
+
+  if (erreurInsertion) {
+    console.error('Erreur lors de l\'enregistrement des joueurs :', erreurInsertion);
+    alert('Une erreur est survenue, réessaie.');
+    return;
+  }
+
+  const { error: erreurVerrouillage } = await supabaseClient
+    .from('box')
+    .update({ verrouillee: true })
+    .eq('id', boxId);
+
+  if (erreurVerrouillage) {
+    console.error('Erreur lors du verrouillage de la box :', erreurVerrouillage);
+    return;
+  }
+
+  verrouillerFormulaire();
+});
+
+function verrouillerFormulaire() {
+  document.getElementById('box-select').disabled = true;
+  document.querySelectorAll('.joueur-bloc input, .joueur-bloc select').forEach(champ => {
+    champ.disabled = true;
+  });
+  document.getElementById('btn-ajouter-joueur').style.display = 'none';
+  document.getElementById('btn-bonne-chance').style.display = 'none';
+  document.getElementById('message-verrouillage').style.display = 'block';
+}

@@ -98,13 +98,32 @@ input, select {
 button {
   width: 100%;
   padding: 12px;
-  background: var(--vert-fairway);
-  color: var(--creme);
   border: none;
   border-radius: 2px;
   font-family: 'IBM Plex Mono', monospace;
   font-weight: 600;
   cursor: pointer;
+}
+
+#btn-ajouter-joueur {
+  background: var(--laiton);
+  color: var(--marine);
+  margin-top: 4px;
+}
+
+#btn-bonne-chance {
+  background: var(--alerte);
+  color: var(--creme);
+  margin-top: 28px;
+  padding: 16px;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+button:disabled {
+  background: #999;
+  color: #eee;
+  cursor: not-allowed;
 }
 
 button:disabled {
