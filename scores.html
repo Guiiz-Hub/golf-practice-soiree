@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saisie des scores - DTEA EVENT</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="carte-score">
+    <h1>Saisie des distances</h1>
+    <p>Choisis ta box pour entrer les distances de chaque joueur.</p>
+
+    <label for="box-select">Numéro de box</label>
+    <select id="box-select">
+      <option value="">-- Sélectionne ta box --</option>
+    </select>
+
+    <div id="section-scores" style="display: none;">
+      <hr>
+      <div id="joueurs-scores-container"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="js/scores.js"></script>
+</body>
+</html>

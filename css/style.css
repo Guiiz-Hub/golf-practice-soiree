@@ -130,3 +130,28 @@ button:disabled {
   background: #999;
   cursor: not-allowed;
 }
+
+.joueur-score-bloc {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--laiton);
+}
+
+.distances-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.input-distance {
+  width: 70px;
+  text-align: center;
+}
+
+.score-moyenne {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9rem;
+  color: var(--vert-fairway);
+  margin: 4px 0 0;
+}
