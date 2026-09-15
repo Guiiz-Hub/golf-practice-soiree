@@ -3,6 +3,8 @@ const SUPABASE_ANON_KEY = "sb_publishable_CERIGKSYwpKLsQzyAk5fIw_pJiGo1F9";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const SERVICES = ['MOS', 'EWIS', 'CE', 'ASV', 'Pyro', 'HAF', 'ELEC', 'VEF', 'GCONF', 'DIR'];
+
 async function chargerBoxes() {
   const { data, error } = await supabaseClient
     .from('box')
@@ -25,110 +27,152 @@ async function chargerBoxes() {
 
 chargerBoxes();
 
-const SERVICES = ['MOS', 'EWIS', 'CE', 'ASV', 'Pyro', 'HAF', 'ELEC', 'VEF', 'GCONF', 'DIR'];
-let nombreJoueurs = 0;
+let boxIdCourante = null;
+let joueursActuels = [];
 
-function creerBlocJoueur(numero) {
-  const bloc = document.createElement('div');
-  bloc.className = 'joueur-bloc';
+document.getElementById('box-select').addEventListener('change', async (event) => {
+  const section = document.getElementById('section-joueurs');
+  boxIdCourante = event.target.value ? parseInt(event.target.value, 10) : null;
 
-  const optionsServices = SERVICES
-    .map(s => `<option value="${s}">${s}</option>`)
-    .join('');
+  if (!boxIdCourante) {
+    section.style.display = 'none';
+    return;
+  }
 
-  bloc.innerHTML = `
-    <p class="joueur-titre">Joueur ${numero}</p>
-    <input type="text" placeholder="Prénom" class="input-prenom">
-    <input type="text" placeholder="Nom" class="input-nom">
-    <input type="text" placeholder="Pseudo (optionnel)" class="input-pseudo">
-    <select class="input-service">
-      <option value="">-- Service --</option>
-      ${optionsServices}
-    </select>
-  `;
+  section.style.display = 'block';
+  remplirOptionsServices();
+  await chargerEtatBox();
+  ecouterChangementsTempsReel();
+});
 
-  return bloc;
+function remplirOptionsServices() {
+  const select = document.getElementById('input-service');
+  select.innerHTML = '<option value="">-- Service --</option>' +
+    SERVICES.map(s => `<option value="${s}">${s}</option>`).join('');
 }
 
-document.getElementById('btn-ajouter-joueur').addEventListener('click', () => {
-  if (nombreJoueurs >= 5) return;
+async function chargerEtatBox() {
+  document.getElementById('bloc-ajout-joueur').style.display = 'block';
+  document.getElementById('message-box-verrouillee').style.display = 'none';
 
-  nombreJoueurs++;
-  const container = document.getElementById('joueurs-container');
-  container.appendChild(creerBlocJoueur(nombreJoueurs));
+  const { data: box } = await supabaseClient
+    .from('box')
+    .select('verrouillee')
+    .eq('id', boxIdCourante)
+    .single();
 
-  if (nombreJoueurs === 5) {
-    document.getElementById('btn-ajouter-joueur').disabled = true;
+  if (box.verrouillee) {
+    afficherBoxVerrouillee();
+    return;
   }
-});
 
-document.getElementById('box-select').addEventListener('change', (event) => {
-  const section = document.getElementById('section-joueurs');
-  section.style.display = event.target.value ? 'block' : 'none';
-});
+  const { data: joueurs, error } = await supabaseClient
+    .from('joueur')
+    .select('id, prenom, nom')
+    .eq('box_id', boxIdCourante);
 
-document.getElementById('btn-ajouter-joueur').addEventListener('click', () => {
-  document.getElementById('btn-bonne-chance').disabled = false;
+  if (error) {
+    console.error('Erreur chargement joueurs :', error);
+    return;
+  }
+
+  joueursActuels = joueurs;
+  afficherListeJoueurs();
+}
+
+function afficherListeJoueurs() {
+  const liste = document.getElementById('liste-joueurs');
+  liste.innerHTML = joueursActuels
+    .map(j => `<li>${j.prenom} ${j.nom}</li>`)
+    .join('');
+
+  const complet = joueursActuels.length >= 5;
+  document.getElementById('btn-ajouter-joueur').disabled = complet;
+  document.getElementById('btn-bonne-chance').disabled = joueursActuels.length === 0;
+}
+
+function afficherBoxVerrouillee() {
+  document.getElementById('bloc-ajout-joueur').style.display = 'none';
+  document.getElementById('message-box-verrouillee').style.display = 'block';
+}
+
+document.getElementById('btn-ajouter-joueur').addEventListener('click', async () => {
+  const prenom = document.getElementById('input-prenom').value.trim();
+  const nom = document.getElementById('input-nom').value.trim();
+  const pseudo = document.getElementById('input-pseudo').value.trim();
+  const service = document.getElementById('input-service').value;
+
+  if (!prenom || !nom || !service) {
+    alert('Merci de remplir prénom, nom et service.');
+    return;
+  }
+
+  const dejaPresent = joueursActuels.some(j =>
+    j.prenom.toLowerCase() === prenom.toLowerCase() &&
+    j.nom.toLowerCase() === nom.toLowerCase()
+  );
+  if (dejaPresent) {
+    alert('Ce nom est déjà inscrit dans cette box. Si ce n\'est pas toi, vérifie l\'orthographe.');
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from('joueur')
+    .insert([{ box_id: boxIdCourante, prenom, nom, pseudo: pseudo || null, service }]);
+
+  if (error) {
+    console.error('Erreur ajout joueur :', error);
+    alert('Une erreur est survenue, réessaie.');
+    return;
+  }
+
+  document.getElementById('input-prenom').value = '';
+  document.getElementById('input-nom').value = '';
+  document.getElementById('input-pseudo').value = '';
+  document.getElementById('input-service').value = '';
 });
 
 document.getElementById('btn-bonne-chance').addEventListener('click', async () => {
   const confirmation = confirm('Êtes-vous sûrs d\'être au complet ? Une fois validé, plus aucune modification ne sera possible.');
   if (!confirmation) return;
 
-  const boxId = parseInt(document.getElementById('box-select').value, 10);
-  const blocs = document.querySelectorAll('.joueur-bloc');
-
-  const joueursAEnregistrer = [];
-
-  for (const bloc of blocs) {
-    const prenom = bloc.querySelector('.input-prenom').value.trim();
-    const nom = bloc.querySelector('.input-nom').value.trim();
-    const pseudo = bloc.querySelector('.input-pseudo').value.trim();
-    const service = bloc.querySelector('.input-service').value;
-
-    if (!prenom || !nom || !service) {
-      alert('Merci de remplir prénom, nom et service pour chaque joueur avant de lancer le jeu.');
-      return;
-    }
-
-    joueursAEnregistrer.push({
-      box_id: boxId,
-      prenom,
-      nom,
-      pseudo: pseudo || null,
-      service,
-    });
-  }
-
-  const { error: erreurInsertion } = await supabaseClient
-    .from('joueur')
-    .insert(joueursAEnregistrer);
-
-  if (erreurInsertion) {
-    console.error('Erreur lors de l\'enregistrement des joueurs :', erreurInsertion);
-    alert('Une erreur est survenue, réessaie.');
-    return;
-  }
-
-  const { error: erreurVerrouillage } = await supabaseClient
+  const { error } = await supabaseClient
     .from('box')
     .update({ verrouillee: true })
-    .eq('id', boxId);
+    .eq('id', boxIdCourante);
 
-  if (erreurVerrouillage) {
-    console.error('Erreur lors du verrouillage de la box :', erreurVerrouillage);
-    return;
+  if (error) {
+    console.error('Erreur verrouillage box :', error);
   }
-
-  verrouillerFormulaire();
 });
 
-function verrouillerFormulaire() {
-  document.getElementById('box-select').disabled = true;
-  document.querySelectorAll('.joueur-bloc input, .joueur-bloc select').forEach(champ => {
-    champ.disabled = true;
-  });
-  document.getElementById('btn-ajouter-joueur').style.display = 'none';
-  document.getElementById('btn-bonne-chance').style.display = 'none';
-  document.getElementById('message-verrouillage').style.display = 'block';
+let canalActuel = null;
+
+function ecouterChangementsTempsReel() {
+  if (canalActuel) {
+    supabaseClient.removeChannel(canalActuel);
+  }
+
+  canalActuel = supabaseClient
+    .channel('box-' + boxIdCourante)
+    .on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'joueur',
+      filter: 'box_id=eq.' + boxIdCourante,
+    }, (payload) => {
+      joueursActuels.push(payload.new);
+      afficherListeJoueurs();
+    })
+    .on('postgres_changes', {
+      event: 'UPDATE',
+      schema: 'public',
+      table: 'box',
+      filter: 'id=eq.' + boxIdCourante,
+    }, (payload) => {
+      if (payload.new.verrouillee) {
+        afficherBoxVerrouillee();
+      }
+    })
+    .subscribe();
 }

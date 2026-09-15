@@ -16,15 +16,27 @@
   <select id="box-select">
     <option value="">-- Sélectionne ta box --</option>
   </select>
-    <div id="section-joueurs" style="display: none;">
+  <div id="section-joueurs" style="display: none;">
     <hr>
-    <p>Ajoute les joueurs de ta box (5 maximum).</p>
-    <div id="joueurs-container"></div>
-    <button id="btn-ajouter-joueur" type="button">+ Ajouter un joueur</button>
-    <button id="btn-bonne-chance" type="button" disabled>Let's Go !</button>
-    <p id="message-verrouillage" style="display: none;">C'est parti, que la force soit avec vous !</p>
+    <p id="message-box-verrouillee" style="display: none;">Cette box a déjà démarré, plus d'ajout possible.</p>
+
+    <div id="bloc-ajout-joueur">
+      <p>Joueurs déjà inscrits :</p>
+      <ul id="liste-joueurs"></ul>
+
+      <p>Ajoute-toi :</p>
+      <input type="text" id="input-prenom" placeholder="Prénom">
+      <input type="text" id="input-nom" placeholder="Nom">
+      <input type="text" id="input-pseudo" placeholder="Pseudo (optionnel)">
+      <select id="input-service">
+        <option value="">-- Service --</option>
+      </select>
+      <button id="btn-ajouter-joueur" type="button">+ Ajouter ce joueur</button>
+
+      <button id="btn-bonne-chance" type="button" disabled>Let's Go !</button>
+      <p id="message-verrouillage" style="display: none;">C'est parti, que la force soit avec vous !</p>
+    </div>
   </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
