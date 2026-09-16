@@ -22,6 +22,15 @@ async function chargerBoxesDemarrees() {
     option.textContent = `Box n°${box.numero}`;
     select.appendChild(option);
   });
+
+  const params = new URLSearchParams(window.location.search);
+  const boxIdDepuisUrl = params.get('box');
+
+  if (boxIdDepuisUrl && data.some(box => String(box.id) === boxIdDepuisUrl)) {
+    select.value = boxIdDepuisUrl;
+    select.disabled = true;
+    select.dispatchEvent(new Event('change'));
+  }
 }
 
 chargerBoxesDemarrees();
@@ -71,17 +80,20 @@ function creerBlocScore(joueur, scores) {
 
   let inputsHtml = '';
   for (let coup = 1; coup <= 5; coup++) {
-    const scoreExistant = scores.find(s => s.numero_coup === coup);
-    const valeur = scoreExistant ? scoreExistant.distance_m : '';
-    inputsHtml += `
+  const scoreExistant = scores.find(s => s.numero_coup === coup);
+  const valeur = scoreExistant ? scoreExistant.distance_m : '';
+  inputsHtml += `
+    <div class="coup-wrapper">
+      <span class="coup-label">Coup ${coup}</span>
       <input type="number" min="0" max="350"
         class="input-distance"
         data-joueur-id="${joueur.id}"
         data-coup="${coup}"
-        placeholder="Coup ${coup}"
+        placeholder="m"
         value="${valeur}">
-    `;
-  }
+    </div>
+  `;
+}
 
   bloc.innerHTML = `
     <p class="joueur-titre">${joueur.prenom} ${joueur.nom}</p>

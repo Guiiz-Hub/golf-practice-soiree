@@ -155,3 +155,23 @@ button:disabled {
   color: var(--vert-fairway);
   margin: 4px 0 0;
 }
+
+.coup-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.coup-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--vert-fairway);
+}
+
+.explication-score {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--marine);
+  margin-bottom: 16px;
+}

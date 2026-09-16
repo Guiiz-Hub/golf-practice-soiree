@@ -48,8 +48,7 @@ function remplirOptionsServices() {
 
 async function chargerEtatBox() {
   document.getElementById('bloc-ajout-joueur').style.display = 'block';
-  document.getElementById('message-box-verrouillee').style.display = 'none';
-
+  
   const { data: box } = await supabaseClient
     .from('box')
     .select('verrouillee')
@@ -87,8 +86,7 @@ function afficherListeJoueurs() {
 }
 
 function afficherBoxVerrouillee() {
-  document.getElementById('bloc-ajout-joueur').style.display = 'none';
-  document.getElementById('message-box-verrouillee').style.display = 'block';
+  window.location.href = 'scores.html?box=' + boxIdCourante;
 }
 
 document.getElementById('btn-ajouter-joueur').addEventListener('click', async () => {
