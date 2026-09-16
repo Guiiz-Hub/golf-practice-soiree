@@ -88,12 +88,12 @@ function creerBlocScore(joueur, scores) {
   inputsHtml += `
     <div class="coup-wrapper">
       <span class="coup-label">Coup ${coup}</span>
-      <input type="number" min="0" max="350"
-        class="input-distance"
-        data-joueur-id="${joueur.id}"
-        data-coup="${coup}"
-        placeholder="m"
-        value="${valeur}">
+      <input type="text" inputmode="numeric" pattern="[0-9]*"
+      class="input-distance"
+      data-joueur-id="${joueur.id}"
+      data-coup="${coup}"
+      placeholder="m"
+      value="${valeur}">
     </div>
   `;
 }
@@ -103,11 +103,11 @@ function creerBlocScore(joueur, scores) {
     <div class="distances-container">${inputsHtml}</div>
     <p class="score-moyenne" id="moyenne-${joueur.id}"></p>
   `;
-
+ 
   bloc.querySelectorAll('.input-distance').forEach(input => {
     input.addEventListener('blur', enregistrerDistance);
+    empecherCaracteresNonNumeriques(input);
   });
-
   calculerEtAfficherMoyenne(joueur.id, scores);
 
   return bloc;
@@ -139,6 +139,18 @@ async function enregistrerDistance(event) {
     console.error('Erreur enregistrement score :', error);
     alert('Une erreur est survenue, réessaie.');
   }
+}
+
+function empecherCaracteresNonNumeriques(input) {
+  input.addEventListener('keydown', (event) => {
+    if (['e', 'E', '+', '-', '.', ','].includes(event.key)) {
+      event.preventDefault();
+    }
+  });
+
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/[^0-9]/g, '');
+  });
 }
 
 function calculerEtAfficherMoyenne(joueurId, scores) {
