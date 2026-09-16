@@ -1,4 +1,7 @@
 import { supabaseClient } from './supabaseClient.js';
+import { initClassementWidget } from './classementWidget.js';
+
+initClassementWidget();
 
 let boxIdCourante = null;
 let canalActuel = null;
