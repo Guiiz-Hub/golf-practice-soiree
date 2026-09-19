@@ -36,6 +36,40 @@ async function chargerListeBoxActuelle() {
     .join('');
 }
 
+async function trouverScoresIncomplets() {
+  const { data: joueurs, error: erreurJoueurs } = await supabaseClient
+    .from('joueur')
+    .select('id, prenom, nom, box(numero)');
+
+  if (erreurJoueurs) {
+    console.error('Erreur chargement joueurs :', erreurJoueurs);
+    return [];
+  }
+
+  const { data: scores, error: erreurScores } = await supabaseClient
+    .from('score')
+    .select('joueur_id');
+
+  if (erreurScores) {
+    console.error('Erreur chargement scores :', erreurScores);
+    return [];
+  }
+
+  const incomplets = joueurs
+    .map(joueur => {
+      const nbCoups = scores.filter(s => s.joueur_id === joueur.id).length;
+      return {
+        boxNumero: joueur.box ? joueur.box.numero : '?',
+        nom: `${joueur.prenom} ${joueur.nom}`,
+        nbCoups,
+      };
+    })
+    .filter(j => j.nbCoups < 5)
+    .sort((a, b) => a.boxNumero - b.boxNumero);
+
+  return incomplets;
+}
+
 document.getElementById('btn-deverrouiller').addEventListener('click', () => {
   const saisie = document.getElementById('input-mot-de-passe').value;
 
@@ -83,12 +117,27 @@ document.getElementById('btn-verrouiller-scores').addEventListener('click', asyn
   }
 
   const nouveauStatut = !etat.scores_verrouilles;
-  const confirmation = confirm(
-    nouveauStatut
-      ? 'Verrouiller la saisie des scores pour tout le monde ?'
-      : 'Déverrouiller à nouveau la saisie des scores ?'
-  );
-  if (!confirmation) return;
+
+  if (nouveauStatut) {
+    const incomplets = await trouverScoresIncomplets();
+
+    if (incomplets.length > 0) {
+      const details = incomplets
+        .map(j => `Box ${j.boxNumero} — ${j.nom} (${j.nbCoups}/5)`)
+        .join('\n');
+
+      const continuerQuandMeme = confirm(
+        `Attention, ces joueurs n'ont pas terminé leurs 5 coups :\n\n${details}\n\nVerrouiller quand même ?`
+      );
+      if (!continuerQuandMeme) return;
+    } else {
+      const confirmation = confirm('Tous les joueurs ont leurs 5 scores. Verrouiller la saisie pour tout le monde ?');
+      if (!confirmation) return;
+    }
+  } else {
+    const confirmation = confirm('Déverrouiller à nouveau la saisie des scores ?');
+    if (!confirmation) return;
+  }
 
   const { error } = await supabaseClient
     .from('etat_evenement')
