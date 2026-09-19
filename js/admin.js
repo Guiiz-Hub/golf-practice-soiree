@@ -1,4 +1,6 @@
 import { supabaseClient } from './supabaseClient.js';
+import { calculerClassement } from './classementData.js';
+import { construireEquipes } from './tirage.js';
 
 const MOT_DE_PASSE_ADMIN = 'DTEACREW2026';
 
@@ -207,6 +209,94 @@ document.getElementById('btn-configurer-box').addEventListener('click', async ()
 
   alert('Liste des box mise à jour.');
   chargerListeBoxActuelle();
+});
+
+let tirageEnCours = null;
+
+document.getElementById('btn-generer-tirage').addEventListener('click', async () => {
+  const classement = (await calculerClassement()).filter(j => j.moyenne !== null);
+
+  if (classement.length < 5) {
+    alert('Il faut au moins 5 joueurs ayant un score pour lancer un tirage.');
+    return;
+  }
+
+  const { data: boxes } = await supabaseClient.from('box').select('id, numero').order('numero');
+  const nbEquipesAttendu = Math.ceil(classement.length / 5);
+
+  if (!boxes || boxes.length !== nbEquipesAttendu) {
+    alert(
+      `Ce tirage va former ${nbEquipesAttendu} équipes, mais tu as ${boxes ? boxes.length : 0} box configurées. ` +
+      `Reconfigure la liste des box (section plus haut) pour qu'elle contienne exactement ${nbEquipesAttendu} numéros avant de publier.`
+    );
+  }
+
+  tirageEnCours = construireEquipes(classement);
+  afficherApercuTirage(tirageEnCours);
+  document.getElementById('btn-publier-tirage').style.display = 'block';
+});
+
+function afficherApercuTirage(equipes) {
+  const conteneur = document.getElementById('apercu-tirage');
+  conteneur.innerHTML = equipes
+    .map((equipe, index) => `
+      <div class="equipe-apercu">
+        <strong>Équipe ${index + 1}</strong> (${equipe.membres.length} joueurs)
+        <ul>
+          ${equipe.membres.map(m => `<li>${m.nom} — ${m.service}</li>`).join('')}
+        </ul>
+      </div>
+    `)
+    .join('');
+}
+
+document.getElementById('btn-publier-tirage').addEventListener('click', async () => {
+  if (!tirageEnCours) return;
+
+  const confirmation = confirm('Publier ce tirage ? Chaque joueur verra la box vers laquelle se diriger.');
+  if (!confirmation) return;
+
+  const { data: boxes, error: erreurBoxes } = await supabaseClient
+    .from('box')
+    .select('id, numero')
+    .order('numero');
+
+  if (erreurBoxes || !boxes || boxes.length !== tirageEnCours.length) {
+    alert('Le nombre de box ne correspond plus au nombre d\'équipes. Reconfigure les box et régénère un tirage.');
+    return;
+  }
+
+  await supabaseClient.from('equipe_membre').delete().gte('id', 0);
+  await supabaseClient.from('equipe_finale').delete().gte('id', 0);
+
+  for (let i = 0; i < tirageEnCours.length; i++) {
+    const { data: nouvelleEquipe, error: erreurEquipe } = await supabaseClient
+      .from('equipe_finale')
+      .insert({ box_id: boxes[i].id })
+      .select()
+      .single();
+
+    if (erreurEquipe) {
+      alert('Erreur création équipe : ' + erreurEquipe.message);
+      return;
+    }
+
+    const membresAInserer = tirageEnCours[i].membres.map(m => ({
+      equipe_id: nouvelleEquipe.id,
+      joueur_id: m.id,
+    }));
+
+    const { error: erreurMembres } = await supabaseClient
+      .from('equipe_membre')
+      .insert(membresAInserer);
+
+    if (erreurMembres) {
+      alert('Erreur ajout des membres : ' + erreurMembres.message);
+      return;
+    }
+  }
+
+  alert('Tirage publié ! Chaque joueur peut maintenant voir sa nouvelle box.');
 });
 
 document.getElementById('btn-reset-donnees').addEventListener('click', async () => {

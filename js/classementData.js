@@ -3,7 +3,7 @@ import { supabaseClient } from './supabaseClient.js';
 export async function calculerClassement() {
   const { data: joueurs, error: erreurJoueurs } = await supabaseClient
     .from('joueur')
-    .select('id, prenom, nom, box(numero)');
+    .select('id, prenom, nom, service, box(numero)');
 
   if (erreurJoueurs) {
     console.error('Erreur chargement joueurs :', erreurJoueurs);
@@ -32,6 +32,8 @@ export async function calculerClassement() {
     }
 
     return {
+      id: joueur.id,
+      service: joueur.service,
       nom: `${joueur.prenom} ${joueur.nom}`,
       boxNumero: joueur.box ? joueur.box.numero : '?',
       nbCoups: scoresJoueur.length,
