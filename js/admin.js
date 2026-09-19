@@ -36,6 +36,73 @@ async function chargerListeBoxActuelle() {
     .join('');
 }
 
+document.getElementById('btn-deverrouiller').addEventListener('click', () => {
+  const saisie = document.getElementById('input-mot-de-passe').value;
+
+  if (saisie === MOT_DE_PASSE_ADMIN) {
+    document.getElementById('verrou-admin').style.display = 'none';
+    document.getElementById('contenu-admin').style.display = 'block';
+    chargerListeBoxActuelle();
+    chargerStatutScores();
+  } else {
+    document.getElementById('message-erreur-mdp').style.display = 'block';
+  }
+});
+
+async function chargerStatutScores() {
+  const { data, error } = await supabaseClient
+    .from('etat_evenement')
+    .select('scores_verrouilles')
+    .eq('id', 1)
+    .single();
+
+  if (error) {
+    console.error('Erreur lecture etat evenement :', error);
+    return;
+  }
+
+  afficherStatutScores(data.scores_verrouilles);
+}
+
+function afficherStatutScores(verrouille) {
+  document.getElementById('statut-scores').textContent = verrouille ? 'Verrouillés' : 'Ouverts';
+  document.getElementById('btn-verrouiller-scores').textContent =
+    verrouille ? 'Déverrouiller les scores' : 'Verrouiller les scores globalement';
+}
+
+document.getElementById('btn-verrouiller-scores').addEventListener('click', async () => {
+  const { data: etat, error: erreurLecture } = await supabaseClient
+    .from('etat_evenement')
+    .select('scores_verrouilles')
+    .eq('id', 1)
+    .single();
+
+  if (erreurLecture) {
+    alert('Erreur de lecture : ' + erreurLecture.message);
+    return;
+  }
+
+  const nouveauStatut = !etat.scores_verrouilles;
+  const confirmation = confirm(
+    nouveauStatut
+      ? 'Verrouiller la saisie des scores pour tout le monde ?'
+      : 'Déverrouiller à nouveau la saisie des scores ?'
+  );
+  if (!confirmation) return;
+
+  const { error } = await supabaseClient
+    .from('etat_evenement')
+    .update({ scores_verrouilles: nouveauStatut })
+    .eq('id', 1);
+
+  if (error) {
+    alert('Erreur : ' + error.message);
+    return;
+  }
+
+  afficherStatutScores(nouveauStatut);
+});
+
 document.getElementById('btn-configurer-box').addEventListener('click', async () => {
   const texte = document.getElementById('textarea-box').value;
   const numeros = texte
@@ -124,4 +191,5 @@ document.getElementById('btn-reset-donnees').addEventListener('click', async () 
 
   alert('Données réinitialisées.');
   chargerListeBoxActuelle();
+  chargerStatutScores();
 });

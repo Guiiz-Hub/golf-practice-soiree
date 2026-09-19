@@ -2,9 +2,46 @@ import { supabaseClient } from './supabaseClient.js';
 import { initClassementWidget } from './classementWidget.js';
 
 initClassementWidget();
+verifierVerrouillageGlobal();
 
 let boxIdCourante = null;
 let canalActuel = null;
+let scoresVerrouillesGlobalement = false;
+
+async function verifierVerrouillageGlobal() {
+  const { data, error } = await supabaseClient
+    .from('etat_evenement')
+    .select('scores_verrouilles')
+    .eq('id', 1)
+    .single();
+
+  if (error) {
+    console.error('Erreur lecture etat evenement :', error);
+    return;
+  }
+
+  scoresVerrouillesGlobalement = data.scores_verrouilles;
+  appliquerVerrouillageGlobal();
+}
+
+function appliquerVerrouillageGlobal() {
+  document.getElementById('message-scores-verrouilles').style.display =
+    scoresVerrouillesGlobalement ? 'block' : 'none';
+
+  document.querySelectorAll('.input-distance').forEach(input => {
+    input.disabled = scoresVerrouillesGlobalement;
+  });
+}
+
+verifierVerrouillageGlobal();
+
+supabaseClient
+  .channel('etat-evenement-scores')
+  .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'etat_evenement' }, (payload) => {
+    scoresVerrouillesGlobalement = payload.new.scores_verrouilles;
+    appliquerVerrouillageGlobal();
+  })
+  .subscribe();
 
 async function chargerBoxesDemarrees() {
   const { data, error } = await supabaseClient
@@ -74,6 +111,8 @@ async function chargerJoueursEtScores() {
 
     container.appendChild(creerBlocScore(joueur, scores || []));
   }
+
+  appliquerVerrouillageGlobal();
 }
 
 function creerBlocScore(joueur, scores) {
@@ -114,6 +153,7 @@ function creerBlocScore(joueur, scores) {
 }
 
 async function enregistrerDistance(event) {
+  if (scoresVerrouillesGlobalement) return
   const input = event.target;
   const joueurId = parseInt(input.dataset.joueurId, 10);
   const numeroCoup = parseInt(input.dataset.coup, 10);
