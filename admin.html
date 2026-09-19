@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - DTEA EVENT</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="verrou-admin" class="carte-score">
+    <h1>Accès admin</h1>
+    <input type="password" id="input-mot-de-passe" placeholder="Mot de passe">
+    <button id="btn-deverrouiller" type="button">Entrer</button>
+    <p id="message-erreur-mdp" style="display: none; color: var(--alerte);">Mot de passe incorrect.</p>
+  </div>
+
+  <div id="contenu-admin" class="carte-score" style="display: none;">
+    <h1>Panneau admin</h1>
+
+    <hr>
+    <h2>Configuration des box</h2>
+    <p>Numéros de box, un par ligne (remplace intégralement la liste actuelle et efface toutes les données de jeu en cours).</p>
+    <textarea id="textarea-box" rows="6" placeholder="1&#10;2&#10;3&#10;..."></textarea>
+    <button id="btn-configurer-box" type="button">Enregistrer la liste des box</button>
+
+    <p><strong>Box actuellement configurées :</strong></p>
+    <ul id="liste-box-actuelle"></ul>
+
+    <hr>
+    <h2>Réinitialiser les données de jeu</h2>
+    <p>Vide tous les joueurs et scores, déverrouille toutes les box. Conserve la liste des numéros de box.</p>
+    <button id="btn-reset-donnees" type="button">Réinitialiser les données</button>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
