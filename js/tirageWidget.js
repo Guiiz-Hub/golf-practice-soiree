@@ -2,6 +2,7 @@ import { supabaseClient } from './supabaseClient.js';
 
 let boxIdCourante = null;
 let canalTirage = null;
+let dernierResultat = null;
 
 export function initTirageWidget(boxId) {
   boxIdCourante = boxId;
@@ -13,6 +14,7 @@ export function initTirageWidget(boxId) {
 async function verifierTirageDejaPublie() {
   const resultats = await recupererAffectationsBox();
   if (resultats.length > 0) {
+    dernierResultat = resultats;
     afficherPopupTirage(resultats);
   }
 }
@@ -48,17 +50,27 @@ function injecterHtmlPopupTirage() {
   conteneur.innerHTML = `
     <div id="popup-tirage-fond" class="popup-tirage-fond">
       <div class="popup-tirage-carte">
-        <h2>Bravo à toutes et à tous, les prochaines équipes sont là !</h2>
+        <h2>Bravo à tous, les prochaines équipes sont faites !</h2>
         <p>Votre prochain emplacement se trouve ci-dessous :</p>
         <ul id="popup-tirage-liste"></ul>
         <button id="popup-tirage-fermer" type="button">Compris, j'y vais !</button>
       </div>
     </div>
+    <button id="bulle-tirage" class="bulle-tirage" type="button" style="display: none;">
+      Next <span class="fleche-tirage">→</span>
+    </button>
   `;
   document.body.appendChild(conteneur);
 
   document.getElementById('popup-tirage-fermer').addEventListener('click', () => {
     document.getElementById('popup-tirage-fond').classList.remove('ouvert');
+    document.getElementById('bulle-tirage').style.display = 'flex';
+  });
+
+  document.getElementById('bulle-tirage').addEventListener('click', () => {
+    if (dernierResultat) {
+      afficherPopupTirage(dernierResultat);
+    }
   });
 }
 
@@ -69,6 +81,7 @@ function afficherPopupTirage(resultats) {
     .join('');
 
   document.getElementById('popup-tirage-fond').classList.add('ouvert');
+  document.getElementById('bulle-tirage').style.display = 'none';
 }
 
 function ecouterPublicationTirage() {
@@ -81,6 +94,7 @@ function ecouterPublicationTirage() {
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'equipe_membre' }, async () => {
       const resultats = await recupererAffectationsBox();
       if (resultats.length > 0) {
+        dernierResultat = resultats;
         afficherPopupTirage(resultats);
       }
     })
