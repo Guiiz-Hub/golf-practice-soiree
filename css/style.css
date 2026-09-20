@@ -417,3 +417,17 @@ tr.podium {
   padding-top: 10px;
   border-top: 1px dashed var(--laiton);
 }
+
+#liste-box-actuelle li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.btn-deverrouiller-box {
+  width: auto;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+}

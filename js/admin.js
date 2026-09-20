@@ -19,7 +19,7 @@ document.getElementById('btn-deverrouiller').addEventListener('click', () => {
 async function chargerListeBoxActuelle() {
   const { data, error } = await supabaseClient
     .from('box')
-    .select('numero, verrouillee')
+    .select('id, numero, verrouillee')
     .order('numero');
 
   if (error) {
@@ -34,8 +34,39 @@ async function chargerListeBoxActuelle() {
   }
 
   liste.innerHTML = data
-    .map(b => `<li>Box ${b.numero} ${b.verrouillee ? '(verrouillée)' : '(libre)'}</li>`)
+    .map(b => `
+      <li>
+        Box ${b.numero} ${b.verrouillee ? '(verrouillée)' : '(libre)'}
+        ${b.verrouillee ? `<button type="button" class="btn-deverrouiller-box" data-box-id="${b.id}" data-box-numero="${b.numero}">Déverrouiller</button>` : ''}
+      </li>
+    `)
     .join('');
+
+  document.querySelectorAll('.btn-deverrouiller-box').forEach(bouton => {
+    bouton.addEventListener('click', deverrouillerUneBox);
+  });
+}
+
+async function deverrouillerUneBox(event) {
+  const boxId = parseInt(event.target.dataset.boxId, 10);
+  const boxNumero = event.target.dataset.boxNumero;
+
+  const confirmation = confirm(
+    `Déverrouiller la box ${boxNumero} ? Les joueurs déjà inscrits pourront à nouveau modifier leur composition et en ajouter de nouveaux.`
+  );
+  if (!confirmation) return;
+
+  const { error } = await supabaseClient
+    .from('box')
+    .update({ verrouillee: false })
+    .eq('id', boxId);
+
+  if (error) {
+    alert('Erreur lors du déverrouillage : ' + error.message);
+    return;
+  }
+
+  chargerListeBoxActuelle();
 }
 
 async function trouverScoresIncomplets() {
