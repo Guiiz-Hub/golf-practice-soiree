@@ -29,7 +29,17 @@ async function actualiser() {
 function injecterHtmlWidget() {
   const conteneur = document.createElement('div');
   conteneur.innerHTML = `
-    <button id="classement-bulle" class="classement-bulle" type="button" title="Voir le classement">🏆</button>
+    <div class="classement-bulle-conteneur">
+      <svg class="texte-circulaire" viewBox="0 0 100 100">
+        <path id="cercle-texte-classement" d="M 50,50 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" fill="none" />
+        <text>
+          <textPath href="#cercle-texte-classement" startOffset="0%">
+            Classement général • Classement général •
+          </textPath>
+        </text>
+      </svg>
+      <button id="classement-bulle" class="classement-bulle" type="button" title="Voir le classement">🏆</button>
+    </div>
     <div id="classement-panneau" class="classement-panneau">
       <div class="classement-panneau-header">
         <h2>Classement en direct</h2>
