@@ -3,16 +3,22 @@ export const CONTENU_BIENVENUE = {
   sections: [
     {
       titre: "Déroulé de la soirée",
-      texte: "Ce soir, un practice de golf en équipes ! On commence par un jeu de distance dans votre box actuelle. Une fois tous les scores enregistrés, un tirage au sort recomposera des équipes équilibrées pour la suite de la soirée."
+      texte: "Ce soir, c'est practice de golf en équipes ! Vous aurez quelques minutes pour vous échauffer, vous familiariser avec le swing. <br>Ensuite, on commence l'affrontement par un jeu de distance à votre emplacement actuel. <br>Une fois tous les scores enregistrés, un tirage au sort aura lieu pour obtenir des équipes d'un niveau équivalent !"
     },
     {
       titre: "Consignes de sécurité",
-      texte: "Restez toujours derrière la ligne de frappe tant qu'un joueur est en train de jouer. Ne récupérez jamais une balle sur le practice sans autorisation. En cas de souci, prévenez un organisateur."
+      texte: "Restez toujours derrière la ligne rouge tant qu'un joueur est en train de frapper la balle, objectif zéro blessé !"
     },
     {
       titre: "Consommations",
-      texte: "Le bar est ouvert toute la soirée. Merci de rester raisonnable, on a encore un tirage au sort et une deuxième partie à jouer !"
+      texte: "Troisième mi-temps constante, attention c'est un marathon, pas un sprint. <br><br>Astuce : N'hésitez pas à payer directement vos premières consommations. Vous serez probablement amener à vous déplacer au cours de la soirée (après le tirage au sort). Les consommations sont liées à un emplacement, pas à une personne.",
+    },
+    {
+      titre: "Organisation",
+      texte: "En cas de problème avec le QR code, le site internet ou le matériel, n'hésitez pas à venir nous voir !"
     }
+
   ],
+  signature: "Thibault et Guillaume",
   texteBouton: "J'ai compris, c'est parti !"
 };

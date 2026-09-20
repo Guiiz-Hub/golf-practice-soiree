@@ -406,3 +406,14 @@ tr.podium {
   text-align: left;
   font-size: 0.9rem;
 }
+
+.signature-bienvenue {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  text-align: right;
+  color: var(--vert-fairway);
+  margin: 18px 0 20px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--laiton);
+}

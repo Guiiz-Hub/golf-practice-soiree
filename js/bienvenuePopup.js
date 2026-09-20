@@ -20,6 +20,7 @@ function injecterHtmlPopupBienvenue() {
       <div class="popup-tirage-carte">
         <h2>${CONTENU_BIENVENUE.titre}</h2>
         ${sectionsHtml}
+        <p class="signature-bienvenue">${CONTENU_BIENVENUE.signature}</p>
         <button id="popup-bienvenue-fermer" type="button">${CONTENU_BIENVENUE.texteBouton}</button>
       </div>
     </div>
