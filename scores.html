@@ -9,9 +9,11 @@
 <body>
   <div class="carte-score">
     <h1>Saisie des distances</h1>
-    <p>Choisis ta box pour entrer les distances de chaque joueur.</p>
+    <p>Pour commencer, choisir le jeu Longest Drive sur l'écran tactile de votre emplacement puis entrez vos scores ci-dessous.</p>
 
-    <label for="box-select">Numéro de box</label>
+    <p id="box-actuelle-affichage" style="display: none;"></p>
+
+    <label for="box-select" id="label-box-select">Numéro de box</label>
     <select id="box-select">
       <option value="">-- Sélectionne ta box --</option>
     </select>

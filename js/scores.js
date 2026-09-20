@@ -66,12 +66,22 @@ async function chargerBoxesDemarrees() {
 
   const params = new URLSearchParams(window.location.search);
   const boxIdDepuisUrl = params.get('box');
+  const boxCorrespondante = data.find(box => String(box.id) === boxIdDepuisUrl);
 
-  if (boxIdDepuisUrl && data.some(box => String(box.id) === boxIdDepuisUrl)) {
+  if (boxCorrespondante) {
+    afficherBoxEnLectureSeule(boxCorrespondante.numero);
     select.value = boxIdDepuisUrl;
-    select.disabled = true;
     select.dispatchEvent(new Event('change'));
   }
+}
+
+function afficherBoxEnLectureSeule(numero) {
+  document.getElementById('box-select').style.display = 'none';
+  document.getElementById('label-box-select').style.display = 'none';
+
+  const affichage = document.getElementById('box-actuelle-affichage');
+  affichage.textContent = `Emplacement : Box n°${numero}`;
+  affichage.style.display = 'block';
 }
 
 chargerBoxesDemarrees();
