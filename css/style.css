@@ -448,14 +448,14 @@ tr.podium {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  animation: tourner 14s linear infinite;
+  animation: tourner 18s linear infinite;
 }
 
 .texte-circulaire text {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 9.2px;
-  font-weight: 600;
-  fill: var(--creme);
+  font-size: 9.1px;
+  font-weight: 700;
+  fill: var(--black);
   letter-spacing: 0.5px;
 }
 
