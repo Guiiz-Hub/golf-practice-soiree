@@ -1,5 +1,6 @@
 import { supabaseClient } from './supabaseClient.js';
 import { initClassementWidget } from './classementWidget.js';
+import { initTirageWidget } from './tirageWidget.js';
 
 initClassementWidget();
 verifierVerrouillageGlobal();
@@ -87,6 +88,7 @@ document.getElementById('box-select').addEventListener('change', async (event) =
   section.style.display = 'block';
   await chargerJoueursEtScores();
   ecouterChangementsScores();
+  initTirageWidget(boxIdCourante);
 });
 
 async function chargerJoueursEtScores() {
