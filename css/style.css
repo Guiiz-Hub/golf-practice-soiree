@@ -393,3 +393,16 @@ tr.podium {
   gap: 6px;
   width: auto;
 }
+
+.popup-tirage-carte h3 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--vert-fairway);
+  margin: 16px 0 4px;
+  text-align: left;
+}
+
+.popup-tirage-carte p {
+  text-align: left;
+  font-size: 0.9rem;
+}

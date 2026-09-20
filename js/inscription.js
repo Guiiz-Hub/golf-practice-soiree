@@ -1,6 +1,8 @@
 import { supabaseClient, SERVICES } from './supabaseClient.js';
 import { initClassementWidget } from './classementWidget.js';
+import { initPopupBienvenue } from './bienvenuePopup.js';
 
+initPopupBienvenue();
 initClassementWidget();
 
 async function chargerBoxes() {
