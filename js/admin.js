@@ -239,14 +239,17 @@ document.getElementById('btn-generer-tirage').addEventListener('click', async ()
 function afficherApercuTirage(equipes) {
   const conteneur = document.getElementById('apercu-tirage');
   conteneur.innerHTML = equipes
-    .map((equipe, index) => `
-      <div class="equipe-apercu">
-        <strong>Équipe ${index + 1}</strong> (${equipe.membres.length} joueurs)
-        <ul>
-          ${equipe.membres.map(m => `<li>${m.nom} — ${m.service}</li>`).join('')}
-        </ul>
-      </div>
-    `)
+    .map((equipe, index) => {
+      const membresTries = [...equipe.membres].sort((a, b) => a.chapeau - b.chapeau);
+      return `
+        <div class="equipe-apercu">
+          <strong>Équipe ${index + 1}</strong> (${equipe.membres.length} joueurs)
+          <ul>
+            ${membresTries.map(m => `<li><span class="badge-chapeau">C${m.chapeau}</span> ${m.nom} — ${m.service}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    })
     .join('');
 }
 

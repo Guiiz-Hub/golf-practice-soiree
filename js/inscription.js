@@ -1,4 +1,7 @@
 import { supabaseClient, SERVICES } from './supabaseClient.js';
+import { initClassementWidget } from './classementWidget.js';
+
+initClassementWidget();
 
 async function chargerBoxes() {
   const { data, error } = await supabaseClient

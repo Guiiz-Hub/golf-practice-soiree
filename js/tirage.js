@@ -56,9 +56,9 @@ export function construireEquipes(classement) {
       const source = candidatsSansConflit.length > 0 ? candidatsSansConflit : poolDisponible;
 
       const choisiIndex = Math.floor(Math.random() * source.length);
-      const joueurChoisi = source[choisiIndex];
+      const joueurChoisi = { ...source[choisiIndex], chapeau: chapIndex + 1 };
 
-      poolDisponible.splice(poolDisponible.indexOf(joueurChoisi), 1);
+      poolDisponible.splice(poolDisponible.indexOf(source[choisiIndex]), 1);
       equipe.membres.push(joueurChoisi);
       equipe.services[joueurChoisi.service] = (equipe.services[joueurChoisi.service] || 0) + 1;
     });
