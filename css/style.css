@@ -11,6 +11,9 @@
 * {
   box-sizing: border-box;
 }
+button, .classement-bulle, .bulle-tirage {
+  touch-action: manipulation;
+}
 
 body {
   margin: 0;
@@ -88,8 +91,9 @@ hr {
   color: var(--vert-fairway);
 }
 
-input, select {
+input, select, textarea {
   padding: 10px;
+  font-size: 16px;
   font-family: 'IBM Plex Sans', sans-serif;
   border: 1px solid var(--marine);
   border-radius: 2px;
