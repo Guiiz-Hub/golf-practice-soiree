@@ -19,6 +19,6 @@ export const CONTENU_BIENVENUE = {
     }
 
   ],
-  signature: "Thibault et Guillaume",
+  signature: "Louise, Thibault et Guillaume",
   texteBouton: "J'ai compris, c'est parti !"
 };
