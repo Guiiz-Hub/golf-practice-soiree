@@ -208,6 +208,20 @@ document.getElementById('btn-configurer-box').addEventListener('click', async ()
   );
   if (!confirmation) return;
 
+  const { error: erreurMembres } = await supabaseClient.from('equipe_membre').delete().gte('id', 0);
+  if (erreurMembres) {
+    console.error('Erreur suppression membres equipe :', erreurMembres);
+    alert('Échec à la suppression des équipes : ' + erreurMembres.message);
+    return;
+  }
+
+  const { error: erreurEquipes } = await supabaseClient.from('equipe_finale').delete().gte('id', 0);
+  if (erreurEquipes) {
+    console.error('Erreur suppression equipes :', erreurEquipes);
+    alert('Échec à la suppression des équipes : ' + erreurEquipes.message);
+    return;
+  }
+
   const { error: erreurScores } = await supabaseClient.from('score').delete().gte('id', 0);
   if (erreurScores) {
     console.error('Erreur suppression scores :', erreurScores);
@@ -336,6 +350,20 @@ document.getElementById('btn-publier-tirage').addEventListener('click', async ()
 document.getElementById('btn-reset-donnees').addEventListener('click', async () => {
   const confirmation = confirm('Supprimer tous les joueurs et scores, et déverrouiller toutes les box ?');
   if (!confirmation) return;
+
+  const { error: erreurMembres } = await supabaseClient.from('equipe_membre').delete().gte('id', 0);
+  if (erreurMembres) {
+    console.error('Erreur suppression membres equipe :', erreurMembres);
+    alert('Échec à la suppression des équipes : ' + erreurMembres.message);
+    return;
+  }
+
+  const { error: erreurEquipes } = await supabaseClient.from('equipe_finale').delete().gte('id', 0);
+  if (erreurEquipes) {
+    console.error('Erreur suppression equipes :', erreurEquipes);
+    alert('Échec à la suppression des équipes : ' + erreurEquipes.message);
+    return;
+  }
 
   const { error: erreurScores } = await supabaseClient.from('score').delete().gte('id', 0);
   if (erreurScores) {
