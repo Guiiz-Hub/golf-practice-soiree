@@ -774,3 +774,40 @@ button { font-family: 'Inter', sans-serif; }
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
+
+.joueur-carte {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--carte);
+  border: 1px solid var(--carte-bordure);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 7px;
+}
+
+.joueur-identite {
+  flex: 1;
+}
+
+.btn-retirer-joueur {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--carte-bordure);
+  color: var(--texte-attenue);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-retirer-joueur:hover {
+  background: rgba(193, 80, 46, 0.15);
+  border-color: #c1502e;
+  color: #c1502e;
+}

@@ -108,13 +108,36 @@ function afficherListeJoueurs() {
         <div class="joueur-identite">
           <p class="joueur-nom">${j.prenom} ${j.nom}</p>
         </div>
+        <button type="button" class="btn-retirer-joueur" data-joueur-id="${j.id}" data-joueur-nom="${j.prenom} ${j.nom}" title="Retirer ce joueur">×</button>
       </div>
     `)
     .join('');
 
+  document.querySelectorAll('.btn-retirer-joueur').forEach(bouton => {
+    bouton.addEventListener('click', retirerJoueur);
+  });
+
   const complet = joueursActuels.length >= 5;
   document.getElementById('btn-ajouter-joueur').disabled = complet;
   document.getElementById('btn-bonne-chance').disabled = joueursActuels.length === 0;
+}
+
+async function retirerJoueur(event) {
+  const joueurId = parseInt(event.target.dataset.joueurId, 10);
+  const joueurNom = event.target.dataset.joueurNom;
+
+  const confirmation = confirm(`Retirer ${joueurNom} de cette box ?`);
+  if (!confirmation) return;
+
+  const { error } = await supabaseClient
+    .from('joueur')
+    .delete()
+    .eq('id', joueurId);
+
+  if (error) {
+    console.error('Erreur suppression joueur :', error);
+    alert('Une erreur est survenue, réessaie.');
+  }
 }
 
 function afficherBoxVerrouillee() {
@@ -187,6 +210,15 @@ function ecouterChangementsTempsReel() {
       filter: 'box_id=eq.' + boxIdCourante,
     }, (payload) => {
       joueursActuels.push(payload.new);
+      afficherListeJoueurs();
+    })
+    .on('postgres_changes', {
+      event: 'DELETE',
+      schema: 'public',
+      table: 'joueur',
+      filter: 'box_id=eq.' + boxIdCourante,
+    }, (payload) => {
+      joueursActuels = joueursActuels.filter(j => j.id !== payload.old.id);
       afficherListeJoueurs();
     })
     .on('postgres_changes', {
