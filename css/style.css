@@ -1,11 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  --vert-fairway: #1F3D2E;
-  --creme: #F2ECD9;
-  --laiton: #B8923F;
-  --marine: #16232F;
-  --alerte: #C1502E;
+  --fond: #071b25;
+  --carte: #0c2932;
+  --carte-bordure: #28505a;
+  --tuile-icone: #123942;
+  --marque: #20b574;
+  --accent: #c8f45a;
+  --texte-clair: #f5f0e2;
+  --texte-attenue: #9cb0ad;
+  --texte-sur-accent: #102329;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--fond);
+  font-family: 'Inter', sans-serif;
+  color: var(--texte-clair);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
 }
 
 * {
@@ -28,13 +46,17 @@ body {
 }
 
 .carte-score {
-  background: var(--creme);
-  border: 3px solid var(--laiton);
-  border-radius: 4px;
-  padding: 40px 32px;
+  background: var(--fond);
+  border: 1px solid var(--carte-bordure);
+  border-radius: 28px;
+  padding: 0 0 22px;
   max-width: 420px;
   width: 100%;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.contenu-carte {
+  padding: 0 22px;
 }
 
 h1 {
@@ -472,4 +494,283 @@ tr.podium {
   position: absolute;
   top: 20px;
   left: 20px;
+}
+
+.statut-barre {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 22px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.statut-connexion {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  color: var(--texte-attenue);
+}
+
+.point-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.marque-barre {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 22px 18px;
+}
+
+.marque-groupe {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.marque-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--marque);
+  color: var(--texte-clair);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.marque-nom {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.marque-sous-titre {
+  margin: 0;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 9px;
+  color: var(--accent);
+}
+
+.marque-etape {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 11px;
+  color: var(--texte-attenue);
+}
+h1 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 1.1;
+  margin: 8px 0 6px;
+}
+
+.sous-titre {
+  color: var(--texte-attenue);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0 0 18px;
+}
+
+.badge-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(32, 181, 116, 0.12);
+  color: var(--accent);
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 700;
+  font-size: 10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.box-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.box-pilule {
+  flex: 1;
+  background: var(--carte);
+  border: 1px solid var(--carte-bordure);
+  border-radius: 14px;
+  padding: 10px 4px;
+  color: var(--texte-clair);
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.box-pilule-numero {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.box-pilule-statut {
+  font-size: 9px;
+  color: var(--texte-attenue);
+}
+
+.box-pilule-selectionnee {
+  background: var(--marque);
+  border-color: var(--accent);
+}
+
+.box-pilule-selectionnee .box-pilule-statut {
+  color: var(--texte-clair);
+}
+
+.joueur-carte {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--carte);
+  border: 1px solid var(--carte-bordure);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 7px;
+}
+
+.joueur-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--tuile-icone);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 700;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.joueur-nom {
+  margin: 0;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.ajout-joueur-carte {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+input, select, textarea {
+  padding: 10px;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  background: var(--carte);
+  border: 1px solid var(--carte-bordure);
+  border-radius: 8px;
+  color: var(--texte-clair);
+}
+
+.note-capacite {
+  background: var(--carte);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 11px;
+  color: var(--texte-attenue);
+  margin-bottom: 16px;
+}
+
+button { font-family: 'Inter', sans-serif; }
+
+.btn-secondaire {
+  width: 100%;
+  padding: 14px;
+  background: var(--marque);
+  border: none;
+  border-radius: 999px;
+  color: var(--texte-clair);
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(32, 181, 116, 0.35);
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.btn-secondaire:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-secondaire:disabled {
+  background: var(--carte-bordure);
+  color: var(--texte-attenue);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-icone-plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.btn-cta {
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--accent);
+  color: var(--texte-sur-accent);
+  border: none;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn-cta:disabled {
+  background: var(--carte-bordure);
+  color: var(--texte-attenue);
+  cursor: not-allowed;
+}
+
+.separateur-ajout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 10px;
+}
+
+.separateur-ligne {
+  flex: 1;
+  height: 1px;
+  background: var(--carte-bordure);
+}
+
+.separateur-texte {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--texte-attenue);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
