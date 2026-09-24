@@ -822,3 +822,34 @@ tr.podium {
   border-radius: 3px;
   text-align: center;
 }
+
+.input-distance:disabled {
+  color: var(--texte-attenue);
+  -webkit-text-fill-color: var(--texte-attenue);
+  opacity: 1;
+}
+
+.btn-modifier-scores {
+  width: 100%;
+  background: none;
+  border: 1px dashed var(--carte-bordure);
+  color: var(--texte-attenue);
+  font-size: 11px;
+  padding: 8px;
+  margin-top: 8px;
+  border-radius: 8px;
+}
+
+.btn-modifier-scores:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+#btn-verrouiller-local {
+  margin-top: 16px;
+}
+
+.btn-cta-verrouille {
+  background: var(--carte-bordure);
+  color: var(--texte-clair);
+}

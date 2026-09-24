@@ -9,6 +9,7 @@ initEnteteAviation();
 let boxIdCourante = null;
 let canalActuel = null;
 let scoresVerrouillesGlobalement = false;
+let scoresVerrouillesLocalement = false;
 
 async function verifierVerrouillageGlobal() {
   const { data, error } = await supabaseClient
@@ -30,8 +31,11 @@ function appliquerVerrouillageGlobal() {
   document.getElementById('message-scores-verrouilles').style.display =
     scoresVerrouillesGlobalement ? 'block' : 'none';
 
+  document.getElementById('btn-verrouiller-local').style.display =
+    scoresVerrouillesGlobalement ? 'none' : 'block';
+
   document.querySelectorAll('.input-distance').forEach(input => {
-    input.disabled = scoresVerrouillesGlobalement;
+    input.disabled = scoresVerrouillesGlobalement || scoresVerrouillesLocalement;
   });
 }
 
@@ -44,6 +48,27 @@ supabaseClient
     appliquerVerrouillageGlobal();
   })
   .subscribe();
+
+document.getElementById('btn-verrouiller-local').addEventListener('click', () => {
+  if (!scoresVerrouillesLocalement) {
+    scoresVerrouillesLocalement = true;
+  } else {
+    const confirmation = confirm('Déverrouiller les scores pour pouvoir les modifier à nouveau ?');
+    if (!confirmation) return;
+    scoresVerrouillesLocalement = false;
+  }
+  appliquerVerrouillageLocal();
+});
+
+function appliquerVerrouillageLocal() {
+  const bouton = document.getElementById('btn-verrouiller-local');
+  bouton.textContent = scoresVerrouillesLocalement ? 'Déverrouiller les scores' : 'Verrouiller les scores';
+  bouton.classList.toggle('btn-cta-verrouille', scoresVerrouillesLocalement);
+
+  document.querySelectorAll('.input-distance').forEach(input => {
+    input.disabled = scoresVerrouillesLocalement || scoresVerrouillesGlobalement;
+  });
+}
 
 async function chargerBoxesDemarrees() {
   const { data, error } = await supabaseClient
@@ -117,17 +142,18 @@ async function chargerJoueursEtScores() {
   container.innerHTML = '';
 
   for (const joueur of joueurs) {
-  const { data: scores } = await supabaseClient
-    .from('score')
-    .select('numero_coup, distance_m')
-    .eq('joueur_id', joueur.id);
+    const { data: scores } = await supabaseClient
+      .from('score')
+      .select('numero_coup, distance_m')
+      .eq('joueur_id', joueur.id);
 
-  const bloc = creerBlocScore(joueur, scores || []);
-  container.appendChild(bloc);
-  calculerEtAfficherMoyenne(joueur.id, scores || []);
-}
+    const bloc = creerBlocScore(joueur, scores || []);
+    container.appendChild(bloc);
+    calculerEtAfficherMoyenne(joueur.id, scores || []);
+  }
 
   appliquerVerrouillageGlobal();
+  appliquerVerrouillageLocal();
 }
 
 function creerBlocScore(joueur, scores) {
@@ -173,7 +199,7 @@ function creerBlocScore(joueur, scores) {
 }
 
 async function enregistrerDistance(event) {
-  if (scoresVerrouillesGlobalement) return;
+  if (scoresVerrouillesGlobalement || scoresVerrouillesLocalement) return;
 
   const input = event.target;
   const joueurId = parseInt(input.dataset.joueurId, 10);
