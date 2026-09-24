@@ -1,9 +1,10 @@
 import { supabaseClient } from './supabaseClient.js';
 import { initClassementWidget } from './classementWidget.js';
 import { initTirageWidget } from './tirageWidget.js';
+import { initEnteteAviation } from './enteteAviation.js';
 
 initClassementWidget();
-verifierVerrouillageGlobal();
+initEnteteAviation();
 
 let boxIdCourante = null;
 let canalActuel = null;
@@ -79,9 +80,9 @@ function afficherBoxEnLectureSeule(numero) {
   document.getElementById('box-select').style.display = 'none';
   document.getElementById('label-box-select').style.display = 'none';
 
-  const affichage = document.getElementById('box-actuelle-affichage');
-  affichage.textContent = `Emplacement : Box n°${numero}`;
-  affichage.style.display = 'block';
+  const badge = document.getElementById('badge-box');
+  badge.innerHTML = `<span class="point-live"></span> BOX ${String(numero).padStart(2, '0')}`;
+  badge.style.display = 'inline-flex';
 }
 
 chargerBoxesDemarrees();
@@ -116,56 +117,64 @@ async function chargerJoueursEtScores() {
   container.innerHTML = '';
 
   for (const joueur of joueurs) {
-    const { data: scores } = await supabaseClient
-      .from('score')
-      .select('numero_coup, distance_m')
-      .eq('joueur_id', joueur.id);
+  const { data: scores } = await supabaseClient
+    .from('score')
+    .select('numero_coup, distance_m')
+    .eq('joueur_id', joueur.id);
 
-    container.appendChild(creerBlocScore(joueur, scores || []));
-  }
+  const bloc = creerBlocScore(joueur, scores || []);
+  container.appendChild(bloc);
+  calculerEtAfficherMoyenne(joueur.id, scores || []);
+}
 
   appliquerVerrouillageGlobal();
 }
 
 function creerBlocScore(joueur, scores) {
   const bloc = document.createElement('div');
-  bloc.className = 'joueur-score-bloc';
+  bloc.className = 'joueur-score-carte';
   bloc.dataset.joueurId = joueur.id;
 
-  let inputsHtml = '';
+  let tuilesHtml = '';
   for (let coup = 1; coup <= 5; coup++) {
-  const scoreExistant = scores.find(s => s.numero_coup === coup);
-  const valeur = scoreExistant ? scoreExistant.distance_m : '';
-  inputsHtml += `
-    <div class="coup-wrapper">
-      <span class="coup-label">Coup ${coup}</span>
-      <input type="text" inputmode="numeric" pattern="[0-9]*"
-      class="input-distance"
-      data-joueur-id="${joueur.id}"
-      data-coup="${coup}"
-      placeholder="m"
-      value="${valeur}">
-    </div>
-  `;
-}
+    const scoreExistant = scores.find(s => s.numero_coup === coup);
+    const valeur = scoreExistant ? scoreExistant.distance_m : '';
+    tuilesHtml += `
+      <div class="tuile-coup ${valeur === '' ? 'tuile-coup-vide' : ''}">
+        <span class="tuile-coup-label">COUP ${coup}</span>
+        <div class="tuile-coup-valeur">
+          <input type="text" inputmode="numeric" pattern="[0-9]*"
+            class="input-distance"
+            data-joueur-id="${joueur.id}"
+            data-coup="${coup}"
+            value="${valeur}"
+            placeholder="—">
+          <span class="tuile-coup-unite">m</span>
+        </div>
+      </div>
+    `;
+  }
 
   bloc.innerHTML = `
-    <p class="joueur-titre">${joueur.prenom} ${joueur.nom}</p>
-    <div class="distances-container">${inputsHtml}</div>
-    <p class="score-moyenne" id="moyenne-${joueur.id}"></p>
+    <p class="joueur-score-nom">${joueur.prenom} ${joueur.nom}</p>
+    <div class="grille-coups">${tuilesHtml}</div>
+    <div class="carte-moyenne" id="moyenne-carte-${joueur.id}">
+      <p class="moyenne-label">MOYENNE</p>
+      <p class="moyenne-valeur" id="moyenne-${joueur.id}">—</p>
+    </div>
   `;
- 
+
   bloc.querySelectorAll('.input-distance').forEach(input => {
     input.addEventListener('blur', enregistrerDistance);
     empecherCaracteresNonNumeriques(input);
   });
-  calculerEtAfficherMoyenne(joueur.id, scores);
 
   return bloc;
 }
 
 async function enregistrerDistance(event) {
-  if (scoresVerrouillesGlobalement) return
+  if (scoresVerrouillesGlobalement) return;
+
   const input = event.target;
   const joueurId = parseInt(input.dataset.joueurId, 10);
   const numeroCoup = parseInt(input.dataset.coup, 10);
@@ -207,24 +216,27 @@ function empecherCaracteresNonNumeriques(input) {
 
 function calculerEtAfficherMoyenne(joueurId, scores) {
   const el = document.getElementById(`moyenne-${joueurId}`);
-  if (!el) return;
+  const carte = document.getElementById(`moyenne-carte-${joueurId}`);
+  if (!el || !carte) return;
 
   if (scores.length === 0) {
-    el.textContent = 'Aucun coup enregistré';
+    el.innerHTML = `— <span class="moyenne-unite">m</span>`;
+    carte.classList.remove('carte-moyenne-complete');
     return;
   }
 
   const distances = scores.map(s => s.distance_m).sort((a, b) => b - a);
-
   let moyenne;
   if (distances.length >= 5) {
     const quatreMeilleurs = distances.slice(0, 4);
     moyenne = quatreMeilleurs.reduce((a, b) => a + b, 0) / 4;
+    carte.classList.add('carte-moyenne-complete');
   } else {
     moyenne = distances.reduce((a, b) => a + b, 0) / distances.length;
+    carte.classList.remove('carte-moyenne-complete');
   }
 
-  el.textContent = `Moyenne : ${moyenne.toFixed(1)} m (${distances.length}/5 coups)`;
+  el.innerHTML = `${moyenne.toFixed(1).replace('.', ',')} <span class="moyenne-unite">m</span>`;
 }
 
 function ecouterChangementsScores() {
@@ -240,7 +252,7 @@ function ecouterChangementsScores() {
       table: 'score',
     }, async (payload) => {
       const joueurId = payload.new?.joueur_id || payload.old?.joueur_id;
-      const bloc = document.querySelector(`.joueur-score-bloc[data-joueur-id="${joueurId}"]`);
+      const bloc = document.querySelector(`.joueur-score-carte[data-joueur-id="${joueurId}"]`);
       if (!bloc) return;
 
       const { data: scores } = await supabaseClient

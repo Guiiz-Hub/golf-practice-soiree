@@ -7,25 +7,28 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="carte-score">
+<div class="carte-score">
+  <div class="contenu-carte">
+
+    <div id="badge-box" class="badge-eyebrow" style="display: none;"></div>
     <h1>Saisie des distances</h1>
-    <p>Pour commencer, choisir le jeu Longest Drive sur l'écran tactile de votre emplacement puis entrez vos scores ci-dessous.</p>
+    <p class="sous-titre">5 coups - Moyenne des 4 meilleurs, l'erreur est permise !</p>
 
-    <p id="box-actuelle-affichage" style="display: none;"></p>
+    <p id="message-scores-verrouilles" class="alerte-verrouillage" style="display: none;">Les scores sont verrouillés, la saisie est terminée.</p>
 
-    <label for="box-select" id="label-box-select">Numéro de box</label>
-    <select id="box-select">
+    <label for="box-select" id="label-box-select" style="display: none;">Numéro de box</label>
+    <select id="box-select" style="display: none;">
       <option value="">-- Sélectionne ta box --</option>
     </select>
-    
+
     <div id="section-scores" style="display: none;">
-      <hr>
-      <p class="explication-score">Le score retenu est la moyenne de tes 4 meilleurs coups sur 5 (le moins bon est automatiquement écarté). Tant que les 5 coups ne sont pas faits, la moyenne affichée porte sur les coups déjà saisis.</p>
-      <p id="message-scores-verrouilles" style="display: none; color: var(--alerte); font-weight: 600;">Les scores sont verrouillés, la saisie est terminée.</p>
-    <div id="joueurs-scores-container"></div>
+      <div id="joueurs-scores-container"></div>
+    </div>
+
+  </div>
 </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script type="module" src="js/scores.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="js/scores.js"></script>
 </body>
 </html>
