@@ -26,17 +26,29 @@ async function actualiser() {
   if (corps) corps.innerHTML = rendreLignesClassement(classement);
 }
 
+function genererTexteCirculaire(texte) {
+  const rayon = 38;
+  const cx = 50;
+  const cy = 50;
+  const anglePasChar = 360 / texte.length;
+
+  return texte
+    .split('')
+    .map((caractere, index) => {
+      const angle = index * anglePasChar;
+      return `<text x="${cx}" y="${cy - rayon}" transform="rotate(${angle} ${cx} ${cy})" text-anchor="middle">${caractere}</text>`;
+    })
+    .join('');
+}
+
 function injecterHtmlWidget() {
+  const texteRepete = 'CLASSEMENT GÉNÉRAL • CLASSEMENT GÉNÉRAL • ';
+
   const conteneur = document.createElement('div');
   conteneur.innerHTML = `
     <div class="classement-bulle-conteneur">
-      <svg class="texte-circulaire" viewBox="0 0 100 100">
-        <path id="cercle-texte-classement" d="M 50,50 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" fill="none" />
-        <text>
-          <textPath href="#cercle-texte-classement" startOffset="0%">
-            Classement général • Classement général •
-          </textPath>
-        </text>
+      <svg class="texte-circulaire" viewBox="0 0 100 100" width="100" height="100">
+        ${genererTexteCirculaire(texteRepete)}
       </svg>
       <button id="classement-bulle" class="classement-bulle" type="button" title="Voir le classement">🏆</button>
     </div>
