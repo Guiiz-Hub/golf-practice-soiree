@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
 .popup-tirage-fond {
   position: fixed;
   inset: 0;
@@ -73,14 +75,14 @@
   margin: 0 6px;
 }
 
-.signature-bienvenue {
-  font-family: 'Inter', sans-serif;
-  font-style: italic;
+.popup-tirage-carte .signature-bienvenue {
+  font-family: 'Dancing Script', cursive;
+  font-weight: 700;
   font-size: 1.1rem;
   text-align: right;
   color: var(--accent);
   margin: 18px 0 20px;
-  padding-top: 10px;
+  padding-top: 14px;
   border-top: 1px dashed var(--carte-bordure);
 }
 

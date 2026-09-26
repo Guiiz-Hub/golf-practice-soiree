@@ -16,7 +16,7 @@ export function initEnteteAviation() {
         <div class="marque-logo">→</div>
         <div class="marque-texte">
           <p class="marque-nom">DTEA EVENT</p>
-          <p class="marque-sous-titre">GOLF NIGHT · 2026</p>
+          <p class="marque-sous-titre">GOLF NIGHT · 13 Octobre 2026</p>
         </div>
       </div>
     </div>
