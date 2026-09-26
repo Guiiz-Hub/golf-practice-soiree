@@ -1,14 +1,16 @@
 import { supabaseClient, SERVICES } from './supabaseClient.js';
 import { initClassementWidget } from './classementWidget.js';
 import { initPopupBienvenue } from './bienvenuePopup.js';
+import { initEnteteAviation } from './enteteAviation.js';
 
+initEnteteAviation();
 initPopupBienvenue();
 initClassementWidget();
 
 async function chargerBoxes() {
   const { data, error } = await supabaseClient
     .from('box')
-    .select('id, numero')
+    .select('id, numero, verrouillee')
     .order('numero');
 
   if (error) {
@@ -17,16 +19,36 @@ async function chargerBoxes() {
   }
 
   const select = document.getElementById('box-select');
+  const conteneurPilules = document.getElementById('box-pills');
+
   data.forEach(box => {
     const option = document.createElement('option');
     option.value = box.id;
     option.textContent = `Box n°${box.numero}`;
     select.appendChild(option);
+
+    const statutTexte = box.verrouillee ? 'EN COURS' : 'LIBRE';
+
+    const pilule = document.createElement('button');
+    pilule.type = 'button';
+    pilule.className = 'box-pilule';
+    pilule.dataset.boxId = box.id;
+    pilule.innerHTML = `<span class="box-pilule-numero">BOX ${String(box.numero).padStart(2, '0')}</span><span class="box-pilule-statut">${statutTexte}</span>`;
+
+    pilule.addEventListener('click', () => {
+      select.value = box.id;
+      select.dispatchEvent(new Event('change'));
+
+      document.querySelectorAll('.box-pilule').forEach(p => {
+        p.classList.remove('box-pilule-selectionnee');
+      });
+      pilule.classList.add('box-pilule-selectionnee');
+    });
+
+    conteneurPilules.appendChild(pilule);
   });
 }
-
 chargerBoxes();
-
 let boxIdCourante = null;
 let joueursActuels = [];
 
@@ -52,8 +74,6 @@ function remplirOptionsServices() {
 }
 
 async function chargerEtatBox() {
-  document.getElementById('bloc-ajout-joueur').style.display = 'block';
-  
   const { data: box } = await supabaseClient
     .from('box')
     .select('verrouillee')
@@ -80,14 +100,44 @@ async function chargerEtatBox() {
 }
 
 function afficherListeJoueurs() {
-  const liste = document.getElementById('liste-joueurs');
+  const liste = document.getElementById('liste-joueurs-cartes');
   liste.innerHTML = joueursActuels
-    .map(j => `<li>${j.prenom} ${j.nom}</li>`)
+    .map(j => `
+      <div class="joueur-carte">
+        <div class="joueur-avatar">${(j.prenom[0] + j.nom[0]).toUpperCase()}</div>
+        <div class="joueur-identite">
+          <p class="joueur-nom">${j.prenom} ${j.nom}</p>
+        </div>
+        <button type="button" class="btn-retirer-joueur" data-joueur-id="${j.id}" data-joueur-nom="${j.prenom} ${j.nom}" title="Retirer ce joueur">×</button>
+      </div>
+    `)
     .join('');
+
+  document.querySelectorAll('.btn-retirer-joueur').forEach(bouton => {
+    bouton.addEventListener('click', retirerJoueur);
+  });
 
   const complet = joueursActuels.length >= 5;
   document.getElementById('btn-ajouter-joueur').disabled = complet;
   document.getElementById('btn-bonne-chance').disabled = joueursActuels.length === 0;
+}
+
+async function retirerJoueur(event) {
+  const joueurId = parseInt(event.target.dataset.joueurId, 10);
+  const joueurNom = event.target.dataset.joueurNom;
+
+  const confirmation = confirm(`Retirer ${joueurNom} de cette box ?`);
+  if (!confirmation) return;
+
+  const { error } = await supabaseClient
+    .from('joueur')
+    .delete()
+    .eq('id', joueurId);
+
+  if (error) {
+    console.error('Erreur suppression joueur :', error);
+    alert('Une erreur est survenue, réessaie.');
+  }
 }
 
 function afficherBoxVerrouillee() {
@@ -160,6 +210,15 @@ function ecouterChangementsTempsReel() {
       filter: 'box_id=eq.' + boxIdCourante,
     }, (payload) => {
       joueursActuels.push(payload.new);
+      afficherListeJoueurs();
+    })
+    .on('postgres_changes', {
+      event: 'DELETE',
+      schema: 'public',
+      table: 'joueur',
+      filter: 'box_id=eq.' + boxIdCourante,
+    }, (payload) => {
+      joueursActuels = joueursActuels.filter(j => j.id !== payload.old.id);
       afficherListeJoueurs();
     })
     .on('postgres_changes', {

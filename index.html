@@ -4,38 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Practice Golf - Soirée DTEA</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/entete.css">
+  <link rel="stylesheet" href="css/inscription.css">
+  <link rel="stylesheet" href="css/classement.css">
+  <link rel="stylesheet" href="css/popups.css">
 </head>
 <body>
-
 <div class="carte-score">
-  <h1>Bienvenue au DTEA EVENT 2026 !!</h1>
-  <p>Choisis le numéro de ta box pour commencer.</p>
+  <div class="contenu-carte">
 
-  <label for="box-select">Numéro de box</label>
-  <select id="box-select">
-    <option value="">-- Sélectionne ta box --</option>
-  </select>
-  <div id="section-joueurs" style="display: none;">
-    <hr>
-    
-    <div id="bloc-ajout-joueur">
-      <p>Joueurs déjà inscrits (5 joueurs maximum) :</p>
-      <ul id="liste-joueurs"></ul>
-
-      <p>Ajoute-toi :</p>
-      <input type="text" id="input-prenom" placeholder="Prénom">
-      <input type="text" id="input-nom" placeholder="Nom">
-      <input type="text" id="input-pseudo" placeholder="Pseudo (optionnel)">
-      <select id="input-service">
-        <option value="">-- Service --</option>
-      </select>
-      <button id="btn-ajouter-joueur" type="button">+ Ajouter ce joueur</button>
-
-      <button id="btn-bonne-chance" type="button" disabled>Let's Go !</button>
+    <div class="badge-eyebrow">
+      <span class="point-live"></span>
+      INSCRIPTION
     </div>
+    <h1>Choisissez votre box</h1>
+    <p class="sous-titre">Sélectionnez une zone libre, puis ajoutez vos coéquipiers.</p>
+
+    <div id="box-pills" class="box-pills"></div>
+    <select id="box-select" style="display: none;">
+      <option value="">-- Sélectionne ta box --</option>
+    </select>
+
+    <div id="section-joueurs" style="display: none;">
+      <div id="liste-joueurs-cartes"></div>
+      <ul id="liste-joueurs" style="display: none;"></ul>
+
+    <div class="separateur-ajout">
+      <span class="separateur-ligne"></span>
+      <span class="separateur-texte">AJOUTER UN JOUEUR</span>
+      <span class="separateur-ligne"></span>
+      </div>
+      
+
+      <div class="ajout-joueur-carte">
+        <input type="text" id="input-prenom" placeholder="Prénom">
+        <input type="text" id="input-nom" placeholder="Nom">
+        <input type="text" id="input-pseudo" placeholder="Pseudo (optionnel)">
+        <select id="input-service">
+          <option value="">-- Service --</option>
+        </select>
+        <button id="btn-ajouter-joueur" type="button" class="btn-secondaire">
+          <span class="btn-icone-plus">+</span> Ajouter ce joueur
+        </button>
+      </div>
+
+      <div class="note-capacite">Maximum 5 joueurs. Le verrouillage confirme définitivement la box.</div>
+
+      <button id="btn-bonne-chance" type="button" class="btn-cta" disabled>Let's Go !</button>
+    </div>
+
   </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module" src="js/inscription.js"></script>
 </body>
