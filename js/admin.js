@@ -11,6 +11,8 @@ document.getElementById('btn-deverrouiller').addEventListener('click', () => {
     document.getElementById('verrou-admin').style.display = 'none';
     document.getElementById('contenu-admin').style.display = 'block';
     chargerListeBoxActuelle();
+        chargerStatutScores();
+      chargerTirageExistant();
   } else {
     document.getElementById('message-erreur-mdp').style.display = 'block';
   }
@@ -346,6 +348,45 @@ document.getElementById('btn-publier-tirage').addEventListener('click', async ()
 
   alert('Tirage publié ! Chaque joueur peut maintenant voir sa nouvelle box.');
 });
+
+async function chargerTirageExistant() {
+  const { data, error } = await supabaseClient
+    .from('equipe_finale')
+    .select('id, box(numero), equipe_membre(joueur(prenom, nom, service))')
+    .order('id');
+
+  if (error) {
+    console.error('Erreur chargement tirage existant :', error);
+    return;
+  }
+
+  if (!data || data.length === 0) return;
+
+  const equipesExistantes = data.map(equipe => ({
+    boxNumero: equipe.box ? equipe.box.numero : '?',
+    membres: (equipe.equipe_membre || []).map(m => ({
+      nom: `${m.joueur.prenom} ${m.joueur.nom}`,
+      service: m.joueur.service,
+    })),
+  }));
+
+  afficherTirageDejaPublie(equipesExistantes);
+}
+
+function afficherTirageDejaPublie(equipes) {
+  const conteneur = document.getElementById('apercu-tirage');
+  conteneur.innerHTML = `
+    <p class="avertissement-tirage-existant">Un tirage est déjà publié (ci-dessous). "Générer un tirage" créera un nouvel aperçu qui ne remplacera celui-ci qu'après avoir cliqué "Publier".</p>
+    ${equipes.map(equipe => `
+      <div class="equipe-apercu">
+        <strong>Box ${equipe.boxNumero}</strong> (${equipe.membres.length} joueurs)
+        <ul>
+          ${equipe.membres.map(m => `<li>${m.nom} — ${m.service}</li>`).join('')}
+        </ul>
+      </div>
+    `).join('')}
+  `;
+}
 
 document.getElementById('btn-reset-donnees').addEventListener('click', async () => {
   const confirmation = confirm('Supprimer tous les joueurs et scores, et déverrouiller toutes les box ?');

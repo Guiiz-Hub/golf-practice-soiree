@@ -47,3 +47,13 @@
   border-radius: 3px;
   text-align: center;
 }
+
+.avertissement-tirage-existant {
+  background: rgba(200, 244, 90, 0.08);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-bottom: 12px;
+}
