@@ -1,0 +1,105 @@
+.popup-tirage-fond {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 27, 37, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1500;
+}
+
+.popup-tirage-fond.ouvert {
+  display: flex;
+}
+
+.popup-tirage-carte {
+  background: var(--carte);
+  border: 1px solid var(--carte-bordure);
+  border-radius: 16px;
+  padding: 28px 24px;
+  max-width: 420px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: center;
+  animation: surgir 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes surgir {
+  from { opacity: 0; transform: scale(0.9) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.popup-tirage-carte h2 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.3rem;
+  margin: 0 0 10px;
+  color: var(--texte-clair);
+}
+
+.popup-tirage-carte h3 {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent);
+  margin: 16px 0 4px;
+  text-align: left;
+}
+
+.popup-tirage-carte p {
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--texte-clair);
+}
+
+#popup-tirage-liste {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+  text-align: left;
+}
+
+#popup-tirage-liste li {
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--carte-bordure);
+  font-family: 'Roboto Mono', monospace;
+  color: var(--texte-clair);
+}
+
+.fleche-tirage {
+  color: var(--accent);
+  font-weight: 700;
+  margin: 0 6px;
+}
+
+.signature-bienvenue {
+  font-family: 'Inter', sans-serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  text-align: right;
+  color: var(--accent);
+  margin: 18px 0 20px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--carte-bordure);
+}
+
+.bulle-tirage {
+  position: fixed;
+  bottom: 32px;
+  left: 20px;
+  padding: 12px 18px;
+  border-radius: 30px;
+  background: var(--marque);
+  color: var(--texte-clair);
+  border: 2px solid var(--accent);
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  z-index: 2000;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+}

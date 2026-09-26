@@ -1,0 +1,65 @@
+.statut-barre {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 22px;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texte-clair);
+}
+
+.statut-connexion {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  color: var(--texte-attenue);
+}
+
+.point-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.marque-barre {
+  display: flex;
+  align-items: center;
+  padding: 0 22px 18px;
+}
+
+.marque-groupe {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.marque-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--marque);
+  color: var(--texte-clair);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.marque-nom {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--texte-clair);
+}
+
+.marque-sous-titre {
+  margin: 0;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 9px;
+  color: var(--accent);
+}

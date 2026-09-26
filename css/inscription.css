@@ -1,0 +1,178 @@
+.box-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.box-pilule {
+  flex: 1;
+  background: var(--carte);
+  border: 1px solid var(--carte-bordure);
+  border-radius: 14px;
+  padding: 10px 4px;
+  color: var(--texte-clair);
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.box-pilule-numero {
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.box-pilule-statut {
+  font-size: 9px;
+  color: var(--texte-attenue);
+}
+
+.box-pilule-selectionnee {
+  background: var(--marque);
+  border-color: var(--accent);
+}
+
+.box-pilule-selectionnee .box-pilule-statut {
+  color: var(--texte-clair);
+}
+
+.joueur-carte {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--carte);
+  border: 1px solid var(--carte-bordure);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 7px;
+}
+
+.joueur-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--tuile-icone);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 700;
+  font-size: 10px;
+  color: var(--texte-clair);
+  flex-shrink: 0;
+}
+
+.joueur-identite {
+  flex: 1;
+}
+
+.joueur-nom {
+  margin: 0;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.btn-retirer-joueur {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--carte-bordure);
+  color: var(--texte-attenue);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-retirer-joueur:hover {
+  background: rgba(193, 80, 46, 0.15);
+  border-color: var(--alerte);
+  color: var(--alerte);
+}
+
+.separateur-ajout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 10px;
+}
+
+.separateur-ligne {
+  flex: 1;
+  height: 1px;
+  background: var(--carte-bordure);
+}
+
+.separateur-texte {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--texte-attenue);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.ajout-joueur-carte {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.note-capacite {
+  background: var(--carte);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 11px;
+  color: var(--texte-attenue);
+  margin-bottom: 16px;
+}
+
+.btn-secondaire {
+  width: 100%;
+  padding: 14px;
+  background: var(--marque);
+  border: none;
+  border-radius: 999px;
+  color: var(--texte-clair);
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 18px rgba(32, 181, 116, 0.35);
+  transition: transform 0.08s ease, box-shadow 0.15s ease;
+}
+
+.btn-secondaire:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-secondaire:disabled {
+  background: var(--carte-bordure);
+  color: var(--texte-attenue);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.btn-icone-plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+  line-height: 1;
+}
