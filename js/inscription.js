@@ -10,7 +10,7 @@ initClassementWidget();
 async function chargerBoxes() {
   const { data, error } = await supabaseClient
     .from('box')
-    .select('id, numero')
+    .select('id, numero, verrouillee')
     .order('numero');
 
   if (error) {
@@ -27,11 +27,13 @@ async function chargerBoxes() {
     option.textContent = `Box n°${box.numero}`;
     select.appendChild(option);
 
+    const statutTexte = box.verrouillee ? 'EN COURS' : 'LIBRE';
+
     const pilule = document.createElement('button');
     pilule.type = 'button';
     pilule.className = 'box-pilule';
     pilule.dataset.boxId = box.id;
-    pilule.innerHTML = `<span class="box-pilule-numero">BOX ${String(box.numero).padStart(2, '0')}</span><span class="box-pilule-statut">LIBRE</span>`;
+    pilule.innerHTML = `<span class="box-pilule-numero">BOX ${String(box.numero).padStart(2, '0')}</span><span class="box-pilule-statut">${statutTexte}</span>`;
 
     pilule.addEventListener('click', () => {
       select.value = box.id;
@@ -39,10 +41,8 @@ async function chargerBoxes() {
 
       document.querySelectorAll('.box-pilule').forEach(p => {
         p.classList.remove('box-pilule-selectionnee');
-        p.querySelector('.box-pilule-statut').textContent = 'LIBRE';
       });
       pilule.classList.add('box-pilule-selectionnee');
-      pilule.querySelector('.box-pilule-statut').textContent = 'SÉLECTIONNÉE';
     });
 
     conteneurPilules.appendChild(pilule);
